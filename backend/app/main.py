@@ -1,13 +1,30 @@
+import os
+
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 from app.services.ml_service import load_model
 from app.db.mongo import ping_database
 from app.routers import predict, analytics
-from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI(title="Fraud Detection API")
+
+# Local dev + the deployed Vercel frontend. Extra origins can be added on Render
+# via the CORS_ORIGINS env var (comma-separated), e.g. a custom domain.
+DEFAULT_ORIGINS = [
+    "http://localhost:5173",
+    "https://fdt-two.vercel.app",
+]
+EXTRA_ORIGINS = [
+    origin.strip().rstrip("/")
+    for origin in os.getenv("CORS_ORIGINS", "").split(",")
+    if origin.strip()
+]
+ALLOWED_ORIGINS = DEFAULT_ORIGINS + [o for o in EXTRA_ORIGINS if o not in DEFAULT_ORIGINS]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
