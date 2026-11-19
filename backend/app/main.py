@@ -22,9 +22,13 @@ EXTRA_ORIGINS = [
 ]
 ALLOWED_ORIGINS = DEFAULT_ORIGINS + [o for o in EXTRA_ORIGINS if o not in DEFAULT_ORIGINS]
 
+# This project's Vercel URLs: the main alias, the team/branch aliases and per-deploy URLs.
+VERCEL_ORIGIN_REGEX = r"https://(fdt-two|fdt(-[a-z0-9-]+)?-isaactizas-projects)\.vercel\.app"
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
+    allow_origin_regex=VERCEL_ORIGIN_REGEX,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
