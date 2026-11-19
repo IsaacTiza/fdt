@@ -31,3 +31,4 @@ desktop.ini
 *.swp
 backend/data/
 backend/artifacts/*.joblib
+!backend/artifacts/model_v*.joblib
